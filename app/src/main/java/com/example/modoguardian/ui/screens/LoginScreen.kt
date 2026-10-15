@@ -129,7 +129,6 @@ fun LoginFormulario(
 
         Button(
             onClick = onLoginClick,
-            enabled = estado.isLoginEnabled,
             modifier = Modifier.fillMaxWidth()
         ) {
             if (estado.isLoading) {
@@ -143,11 +142,5 @@ fun LoginFormulario(
                 Text("Iniciar sesión")
             }
         }
-
-        Text(
-            text = "Usuarios de prueba (clave 123456): admin@guardian.test, supervisor@guardian.test, operador@guardian.test",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
     }
 }
