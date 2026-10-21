@@ -97,9 +97,15 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun cerrarSesion() {
+       try {
+           preferencias.borrarCorreo()
+       } catch (e: Exception) {
+       }
         _estado.update {
             it.copy(
+                email = "",
                 password = "",
+                recordarCorreo = false,
                 rol = null,
                 nombreUsuario = "",
                 isLoading = false,
