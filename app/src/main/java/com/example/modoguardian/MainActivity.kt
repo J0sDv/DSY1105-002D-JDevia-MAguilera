@@ -22,6 +22,8 @@ import com.example.modoguardian.ui.screens.LoginScreen
 import com.example.modoguardian.ui.theme.ModoGuardianTheme
 import com.example.modoguardian.viewmodel.LoginViewModel
 import kotlinx.coroutines.flow.collectLatest
+import com.example.modoguardian.ui.screens.RegistroScreen
+import com.example.modoguardian.viewmodel.RegistroViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +66,7 @@ class MainActivity : ComponentActivity() {
                         startDestination = Screen.Login.route,
                         modifier = Modifier.padding(paddingValues = innerPadding)
                     ) {
+                        // Pantalla de login: al tener exito pasa al Home; tambien puede ir al registro
                         composable(route = Screen.Login.route) {
                             LoginScreen(
                                 viewModel = loginViewModel,
@@ -73,10 +76,28 @@ class MainActivity : ComponentActivity() {
                                         popUpToRoute = Screen.Login,
                                         inclusive = true
                                     )
+                                },
+                                onIrARegistro = {
+                                    navViewModel.navigateTo(
+                                        screen = Screen.Registro,
+                                        singleTop = true
+                                    )
                                 }
                             )
                         }
-
+                        // Pantalla de registro: tiene su propio ViewModel; volver regresa al login
+                        composable(route = Screen.Registro.route) {
+                            val registroViewModel: RegistroViewModel = viewModel()
+                            RegistroScreen(
+                                viewModel = registroViewModel,
+                                onVolver = { navViewModel.navigateBack() },
+                                // Google desde el registro: se entrega el token al login y se vuelve a el
+                                onGoogleToken = { idToken ->
+                                    loginViewModel.onGoogleToken(idToken)
+                                    navViewModel.navigateBack()
+                                }
+                            )
+                        }
                         composable(route = Screen.Home.route) {
                             HomeScreen(
                                 viewModel = loginViewModel,

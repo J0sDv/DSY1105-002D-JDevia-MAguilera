@@ -24,7 +24,9 @@ fun LoginScreenExpandida(
     onEmailChange: (String) -> Unit = {},
     onPasswordChange: (String) -> Unit = {},
     onRecordarCorreoChange: (Boolean) -> Unit = {},
-    onLoginClick: () -> Unit = {}
+    onLoginClick: () -> Unit = {},
+    onGoogleClick: () -> Unit = {},      // línea nueva
+    onIrARegistro: () -> Unit = {}
 ) {
     Scaffold(
         topBar = {
@@ -87,7 +89,9 @@ fun LoginScreenExpandida(
                     onPasswordChange = onPasswordChange,
                     onRecordarCorreoChange = onRecordarCorreoChange,
                     onLoginClick = onLoginClick,
-                    modifier = Modifier.widthIn(max = 420.dp)
+                    modifier = Modifier.widthIn(max = 420.dp),
+                    onGoogleClick = onGoogleClick,
+                    onIrARegistro = onIrARegistro
                 )
             }
         }

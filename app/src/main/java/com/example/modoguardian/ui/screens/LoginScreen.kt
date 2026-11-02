@@ -16,42 +16,59 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.modoguardian.model.LoginUiState
 import com.example.modoguardian.ui.utils.obtenerWindowSizeClass
+import com.example.modoguardian.ui.utils.rememberGoogleSignIn
 import com.example.modoguardian.viewmodel.LoginViewModel
 
-// Archivo principal, identifica el tamaño de pantalla y elige el layout
+// Archivo principal: identifica el tamaño de pantalla y elige el layout
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
-    onLoginExitoso: () -> Unit
+    onLoginExitoso: () -> Unit,
+    onIrARegistro: () -> Unit
 ) {
+    // Observa el estado del ViewModel (se recompone cuando cambia)
     val estado by viewModel.estado.collectAsState()
     val windowSizeClass = obtenerWindowSizeClass()
 
+    // Cuando el login es correcto el ViewModel guarda el rol; aqui se avisa para navegar
     LaunchedEffect(estado.rol) {
         if (estado.rol != null) onLoginExitoso()
     }
 
+    // Boton de google: obtiene el token y se lo entrega al ViewModel
+    val onGoogleClick = rememberGoogleSignIn(
+        onToken = viewModel::onGoogleToken,
+        onError = viewModel::onGoogleError
+    )
+
+    // Compact = celular (Column) | Medium = Card centrada | Expanded = Row
     when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Compact -> LoginScreenCompacta(
             estado = estado,
             onEmailChange = viewModel::onEmailChange,
             onPasswordChange = viewModel::onPasswordChange,
             onRecordarCorreoChange = viewModel::onRecordarCorreoChange,
-            onLoginClick = viewModel::onLoginClick
+            onLoginClick = viewModel::onLoginClick,
+            onGoogleClick = onGoogleClick,
+            onIrARegistro = onIrARegistro
         )
         WindowWidthSizeClass.Medium -> LoginScreenMediana(
             estado = estado,
             onEmailChange = viewModel::onEmailChange,
             onPasswordChange = viewModel::onPasswordChange,
             onRecordarCorreoChange = viewModel::onRecordarCorreoChange,
-            onLoginClick = viewModel::onLoginClick
+            onLoginClick = viewModel::onLoginClick,
+            onGoogleClick = onGoogleClick,
+            onIrARegistro = onIrARegistro
         )
         WindowWidthSizeClass.Expanded -> LoginScreenExpandida(
             estado = estado,
             onEmailChange = viewModel::onEmailChange,
             onPasswordChange = viewModel::onPasswordChange,
             onRecordarCorreoChange = viewModel::onRecordarCorreoChange,
-            onLoginClick = viewModel::onLoginClick
+            onLoginClick = viewModel::onLoginClick,
+            onGoogleClick = onGoogleClick,
+            onIrARegistro = onIrARegistro
         )
     }
 }
@@ -64,13 +81,26 @@ fun LoginFormulario(
     onPasswordChange: (String) -> Unit,
     onRecordarCorreoChange: (Boolean) -> Unit,
     onLoginClick: () -> Unit,
+    onGoogleClick: () -> Unit = {},
+    onIrARegistro: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        // Inicio de sesion con Google
+        OutlinedButton(
+            onClick = onGoogleClick,
+            enabled = !estado.isLoading,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Continuar con Google")
+        }
 
+        SeparadorO()
+
+        // Campo correo
         OutlinedTextField(
             value = estado.email,
             onValueChange = onEmailChange,
@@ -90,6 +120,7 @@ fun LoginFormulario(
             modifier = Modifier.fillMaxWidth()
         )
 
+        // Campo contraseña (texto oculto con PasswordVisualTransformation)
         OutlinedTextField(
             value = estado.password,
             onValueChange = onPasswordChange,
@@ -110,6 +141,7 @@ fun LoginFormulario(
             modifier = Modifier.fillMaxWidth()
         )
 
+        // Checkbox: recordar correo (persistencia local limitada)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(
                 checked = estado.recordarCorreo,
@@ -119,6 +151,7 @@ fun LoginFormulario(
             Text("Recordar mi correo")
         }
 
+        // Error general: credenciales incorrectas, correo sin verificar, sin conexion o google
         estado.errores.general?.let {
             Text(
                 text = it,
@@ -127,6 +160,7 @@ fun LoginFormulario(
             )
         }
 
+        // Boton siempre disponible: valida al presionarlo y muestra carga mientras consulta
         Button(
             onClick = onLoginClick,
             modifier = Modifier.fillMaxWidth()
@@ -141,6 +175,14 @@ fun LoginFormulario(
             } else {
                 Text("Iniciar sesión")
             }
+        }
+
+        // Enlace al registro de usuario
+        TextButton(
+            onClick = onIrARegistro,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("¿No tienes cuenta? Crear cuenta")
         }
     }
 }

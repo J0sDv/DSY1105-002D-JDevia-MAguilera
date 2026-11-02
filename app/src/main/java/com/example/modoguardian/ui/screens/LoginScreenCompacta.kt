@@ -24,7 +24,9 @@ fun LoginScreenCompacta(
     onEmailChange: (String) -> Unit = {},
     onPasswordChange: (String) -> Unit = {},
     onRecordarCorreoChange: (Boolean) -> Unit = {},
-    onLoginClick: () -> Unit = {}
+    onLoginClick: () -> Unit = {},
+    onGoogleClick: () -> Unit = {},
+    onIrARegistro: () -> Unit = {}
 ) {
     Scaffold(
         topBar = {
@@ -65,7 +67,9 @@ fun LoginScreenCompacta(
                 onEmailChange = onEmailChange,
                 onPasswordChange = onPasswordChange,
                 onRecordarCorreoChange = onRecordarCorreoChange,
-                onLoginClick = onLoginClick
+                onLoginClick = onLoginClick,
+                onGoogleClick = onGoogleClick,
+                onIrARegistro = onIrARegistro
             )
         }
     }

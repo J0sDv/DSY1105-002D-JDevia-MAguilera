@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "764883987828",
+    "project_id": "modoguardian-22f8f",
+    "storage_bucket": "modoguardian-22f8f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:764883987828:android:aa1ab8ffd15fdd2b769021",
+        "android_client_info": {
+          "package_name": "com.example.modoguardian"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "764883987828-qos93b7vc2rld96uvg8gppimrm6ri1c6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.modoguardian",
+            "certificate_hash": "32d90d325b193ecea876256d41db029da87ec105"
+          }
+        },
+        {
+          "client_id": "764883987828-1io7v92d198m76afk4agj2u6chgv5c8a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-27eoRRt9slRKUndJiscIyyOWDut3b08"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "764883987828-1io7v92d198m76afk4agj2u6chgv5c8a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
