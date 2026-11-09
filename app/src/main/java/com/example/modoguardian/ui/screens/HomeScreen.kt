@@ -1,141 +1,159 @@
 package com.example.modoguardian.ui.screens
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Videocam
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.example.modoguardian.model.LoginUiState
-import com.example.modoguardian.model.Rol
-import com.example.modoguardian.ui.theme.ModoGuardianTheme
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+
+import androidx.core.content.ContextCompat
+import com.example.modoguardian.ui.utils.EscucharMensajes
+import com.example.modoguardian.ui.utils.obtenerWindowSizeClass
+import com.example.modoguardian.viewmodel.GuardianViewModel
 import com.example.modoguardian.viewmodel.LoginViewModel
+
+// Las cinco pestañas del mockup
+enum class Pestana(val etiqueta: String, val icono: ImageVector) {
+    INICIO("Inicio", Icons.Filled.Home),
+    CAMARAS("Cámaras", Icons.Filled.Videocam),
+    EVENTOS("Eventos", Icons.AutoMirrored.Filled.List),
+    ALERTAS("Alertas", Icons.Filled.Notifications),
+    PERFIL("Perfil", Icons.Filled.Person)
+}
 
 @Composable
 fun HomeScreen(
-    viewModel: LoginViewModel,
+    loginViewModel: LoginViewModel,
+    guardianViewModel: GuardianViewModel,
+    onAbrirCamara: (String) -> Unit,
+    onAbrirAlerta: (String) -> Unit,
+    onGestionarUsuarios: () -> Unit,
     onCerrarSesion: () -> Unit
 ) {
-    val estado by viewModel.estado.collectAsState()
-    HomeContenido(estado = estado, onCerrarSesion = onCerrarSesion)
-}
+    val sesion by loginViewModel.estado.collectAsState()
+    val indicadores by guardianViewModel.indicadores.collectAsState()
+    val context = LocalContext.current
+    val pestanas = Pestana.values()
+    var indice by rememberSaveable { mutableIntStateOf(0) }
+    val compacto = obtenerWindowSizeClass().widthSizeClass == WindowWidthSizeClass.Compact
 
-// Contenido sin ViewModel: permite hacer Preview
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HomeContenido(
-    estado: LoginUiState,
-    onCerrarSesion: () -> Unit = {}
-) {
-    Scaffold(
-        topBar = {
-            TopAppBar(title = { Text("Pantalla Home") })
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+    // Muestra los mensajes (ok, errores, "se enviará al reconectar") como Toast
+    EscucharMensajes(guardianViewModel)
+
+    // Android 13 o superior: hay que pedir el permiso para mostrar notificaciones
+    val pedirNotificaciones = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
+
+    LaunchedEffect(Unit) {
+        guardianViewModel.iniciarSincronizacion()
+        if (Build.VERSION.SDK_INT >= 33 &&
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED
         ) {
-            val rol = estado.rol
+            pedirNotificaciones.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
 
-            if (rol == null) {
-                Text(
-                    text = "Sesión no válida",
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.titleLarge
+    // Contenido de la pestaña elegida
+    val contenido: @Composable (Modifier) -> Unit = { modificador ->
+        Box(modificador.fillMaxSize()) {
+            when (pestanas[indice]) {
+                Pestana.INICIO -> InicioScreen(
+                    guardianVm = guardianViewModel,
+                    sesion = sesion,
+                    onAbrirCamara = onAbrirCamara,
+                    onAbrirAlerta = onAbrirAlerta,
+                    onVerCamaras = { indice = Pestana.CAMARAS.ordinal },
+                    onVerEventos = { indice = Pestana.EVENTOS.ordinal }
                 )
-                Text("Vuelve a iniciar sesión para continuar.")
-            } else {
-                Text(
-                    text = "¡Bienvenido, ${estado.nombreUsuario}!",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.titleLarge
+                Pestana.CAMARAS -> CamarasScreen(guardianViewModel, onAbrirCamara)
+                Pestana.EVENTOS -> EventosScreen(guardianViewModel, onAbrirAlerta)
+                Pestana.ALERTAS -> AlertasScreen(guardianViewModel, onAbrirAlerta)
+                Pestana.PERFIL -> PerfilScreen(
+                    guardianVm = guardianViewModel,
+                    sesion = sesion,
+                    onVerCamaras = { indice = Pestana.CAMARAS.ordinal },
+                    onGestionarUsuarios = onGestionarUsuarios,
+                    onCerrarSesion = onCerrarSesion
                 )
-                Text(text = "Rol: ${rol.etiqueta}", style = MaterialTheme.typography.titleMedium)
-                Text(text = "Correo: ${estado.email}")
+            }
+        }
+    }
 
-                when (rol) {
-                    Rol.ADMIN -> TarjetaFunciones(
-                        titulo = "Panel de Administrador",
-                        funciones = listOf(
-                            "Gestionar usuarios de prueba",
-                            "Administrar roles y permisos",
-                            "Configurar parámetros funcionales del MVP"
+    Scaffold(
+        bottomBar = {
+            // Celular: barra inferior
+            if (compacto) {
+                NavigationBar {
+                    pestanas.forEachIndexed { i, pestana ->
+                        NavigationBarItem(
+                            selected = indice == i,
+                            onClick = { indice = i },
+                            icon = { IconoPestana(pestana, if (pestana == Pestana.ALERTAS) indicadores.pendientes else 0) },
+                            label = { Text(pestana.etiqueta) }
                         )
-                    )
-                    Rol.SUPERVISOR -> TarjetaFunciones(
-                        titulo = "Panel de Supervisor",
-                        funciones = listOf(
-                            "Revisar estados operacionales",
-                            "Revisar eventos y alertas",
-                            "Ver indicadores básicos y dar seguimiento a la atención"
-                        )
-                    )
-                    Rol.OPERADOR -> TarjetaFunciones(
-                        titulo = "Panel de Operador / Monitor",
-                        funciones = listOf(
-                            "Consultar cámaras o dispositivos simulados",
-                            "Revisar eventos y alertas",
-                            "Registrar acciones de atención y actualizar estados"
-                        )
-                    )
+                    }
                 }
             }
-
-            Button(
-                onClick = onCerrarSesion,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(if (rol == null) "Ir al inicio de sesión" else "Cerrar sesión")
+        }
+    ) { innerPadding ->
+        if (compacto) {
+            contenido(Modifier.padding(innerPadding))
+        } else {
+            // Tablet o escritorio: barra lateral + contenido
+            Row(Modifier.padding(innerPadding).fillMaxSize()) {
+                NavigationRail {
+                    Spacer(Modifier.weight(1f))
+                    pestanas.forEachIndexed { i, pestana ->
+                        NavigationRailItem(
+                            selected = indice == i,
+                            onClick = { indice = i },
+                            icon = { IconoPestana(pestana, if (pestana == Pestana.ALERTAS) indicadores.pendientes else 0) },
+                            label = { Text(pestana.etiqueta) }
+                        )
+                    }
+                    Spacer(Modifier.weight(1f))
+                }
+                contenido(Modifier.weight(1f))
             }
         }
     }
 }
 
+// Icono de la pestaña con globo de cantidad (se usa para las alertas pendientes)
 @Composable
-private fun TarjetaFunciones(titulo: String, funciones: List<String>) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text(
-                text = titulo,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                style = MaterialTheme.typography.titleMedium
-            )
-            funciones.forEach { funcion ->
-                Text(
-                    text = "• $funcion",
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-        }
-    }
-}
-
-@Preview(name = "Home Supervisor", widthDp = 360, heightDp = 800)
-@Composable
-fun PreviewHome() {
-    ModoGuardianTheme {
-        HomeContenido(
-            estado = LoginUiState(
-                email = "supervisor@guardian.test",
-                rol = Rol.SUPERVISOR,
-                nombreUsuario = "Supervisor Guardián"
-            )
-        )
+private fun IconoPestana(pestana: Pestana, pendientes: Int) {
+    BadgedBox(badge = { if (pendientes > 0) Badge { Text("$pendientes") } }) {
+        Icon(pestana.icono, contentDescription = pestana.etiqueta)
     }
 }
