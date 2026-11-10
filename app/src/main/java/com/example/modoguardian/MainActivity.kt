@@ -40,16 +40,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
 
-            // ◀ NUEVO: se crea antes del tema porque controla el modo oscuro
             val guardianViewModel: GuardianViewModel = viewModel()
             val modoOscuro by guardianViewModel.modoOscuro.collectAsState()
 
-            // ◀ CAMBIO: darkTheme sigue la preferencia; si no hay, el tema del sistema
             ModoGuardianTheme(darkTheme = modoOscuro ?: isSystemInDarkTheme()) {
 
                 // ViewModels y NavController
-                val navViewModel: MainViewModel = viewModel()      // eventos de navegación
-                val loginViewModel: LoginViewModel = viewModel()   // sesión compartida Login y Home
+                val navViewModel: MainViewModel = viewModel() // eventos de navegación
+                val loginViewModel: LoginViewModel = viewModel() // sesión compartida Login y Home
                 val navController = rememberNavController()
 
                 // Escuchar eventos de navegación emitidos por el ViewModel
@@ -116,8 +114,6 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-
-                        // ◀ CAMBIO: Home con las 5 pestañas
                         composable(route = Screen.Home.route) {
                             HomeScreen(
                                 loginViewModel = loginViewModel,
@@ -137,7 +133,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        // ◀ NUEVO: detalle de cámara (recibe el id por la ruta)
                         composable(
                             route = Screen.CAMARA_DETALLE,
                             arguments = listOf(navArgument("camaraId") { type = NavType.StringType })
@@ -149,7 +144,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        // ◀ NUEVO: detalle de alerta o evento
                         composable(
                             route = Screen.ALERTA_DETALLE,
                             arguments = listOf(navArgument("eventoId") { type = NavType.StringType })
@@ -164,7 +158,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        // ◀ NUEVO: gestión de usuarios (Administrador)
                         composable(route = Screen.Usuarios.route) {
                             UsuariosAdminScreen(
                                 guardianVm = guardianViewModel,
