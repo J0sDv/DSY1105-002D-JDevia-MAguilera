@@ -1,6 +1,6 @@
-# Modo Guardián · MVP móvil (Login y registro)
+# Modo Guardián · MVP móvil
 
-**DSY1105 · Desarrollo de Aplicaciones Móviles** · **Modo Guardián:** **Inicio de sesión y registro de usuarios**.
+**DSY1105 · Desarrollo de Aplicaciones Móviles** · **Modo Guardián** 
 
 **Autores:** Josias Devia y Maximiliano Aguilera
 
@@ -19,8 +19,19 @@
 ### Sobre los roles
 
 - **Todo usuario que se registra queda con el rol Operador.**
-- De momento, **el rol solo se puede cambiar desde Firebase**, no desde la app.
-- Las reglas de seguridad de Firestore impiden que una persona cambie su propio rol desde la app.
+- El **Administrador** puede cambiar el rol de cualquier cuenta desde la app (Perfil → Gestionar usuarios y roles). La persona debe volver a iniciar sesión para ver el cambio. El primer Administrador se asigna directamente en la consola de Firebase.
+- Las reglas de seguridad de Firestore impiden que una persona cambie su propio rol y que un rol sin permiso lea usuarios o cargue datos.
+
+| Función | Operador | Supervisor | Administrador |
+| --- | --- | --- | --- |
+| Ver cámaras, eventos y alertas | Sí | Sí | Sí |
+| Foto, grabación y linterna en CAM-01 | Sí | Sí | Sí |
+| Reportar una incidencia | Sí | Sí | Sí |
+| Atender alertas (confirmar, falsa alarma, resolver, foto, llamada) | Sí | Sí | No |
+| Seguimiento con indicadores en Inicio | No | Sí | Sí |
+| Simular alerta crítica | No | Sí | Sí |
+| Cargar datos de prueba | No | No | Sí |
+| Gestionar usuarios y roles | No | No | Sí |
 
 ---
 
@@ -28,11 +39,41 @@
 
 ### Pantallas
 
-1. **Inicio de sesión:** correo y contraseña, o botón "Continuar con Google". Incluye la opción "Recordar mi correo" y un enlace para crear una cuenta.
-2. **Registro:** correo, contraseña, confirmar contraseña, nombre de usuario y país o región. También permite continuar con Google.
-3. **Home:** muestra el nombre de usuario, el correo, el rol y las funciones disponibles para ese rol (Administrador, Supervisor u Operador).
+Después de iniciar sesión, la app muestra cinco pestañas (barra inferior en celular y barra lateral en pantallas anchas):
 
-Todas las pantallas de acceso se adaptan al tamaño de pantalla: en celular se muestran en una columna, en tablet pequeña dentro de una tarjeta centrada y en tablet grande en dos paneles.
+1. **Inicio:** estado general (cámaras totales, en línea, en atención y capacidad operativa), cámaras asignadas, eventos en vivo, seguimiento de atención (solo Supervisor y Administrador) y el botón "Reportar incidencia".
+2. **Cámaras:** grilla adaptable con filtros (todas, en línea, sin conexión) y detalle de cada cámara con fecha y hora, foto, grabación, linterna y estado del dispositivo.
+3. **Eventos:** historial agrupado por hora, con contadores del día, filtros por tipo, búsqueda por texto y filtros de críticas y pendientes.
+4. **Alertas:** lista de alertas con las pendientes primero. El detalle muestra la confianza de la IA, la cámara asociada, la cuenta regresiva de 2 minutos, las acciones disponibles según el rol y el historial de acciones.
+5. **Perfil:** datos de la cuenta, cambio de contraseña por correo, notificaciones, modo oscuro, herramientas de Administrador y Supervisor, y cierre de sesión.
+
+Además están las pantallas de **inicio de sesión** y **registro**, y la de **gestión de usuarios** (solo Administrador).
+
+Todas las pantallas se adaptan al tamaño: en celular se muestran en una columna, en tablet pequeña dentro de una tarjeta centrada y en tablet grande en dos paneles.
+
+### Cámaras
+
+- **CAM-01 (Entrada Principal)** usa la **cámara real del teléfono** con CameraX: tomar foto, grabar video y encender la linterna funcionan de verdad. Las fotos y los videos se guardan en la Galería, dentro de la carpeta ModoGuardian.
+- **Las demás cámaras son simuladas:** reproducen un video de prueba en bucle (o una señal animada si no se agregó el video) y muestran fecha y hora superpuestas.
+- Si una cámara está sin conexión o en mantención, se muestra "Sin señal".
+- Los botones HABLAR y FULL son simulados en este MVP.
+
+### Eventos, alertas y trazabilidad
+
+- Cada evento tiene tipo, prioridad (crítica, alerta o evento), estado de atención, cámara, zona, fecha y hora.
+- Cada acción sobre una alerta (confirmar, falsa alarma, resolver, foto de incidencia, llamada a Central) se guarda en la colección `acciones` con el usuario, el rol, la fecha y la hora, y se muestra en el historial del detalle.
+- Los **indicadores** (eventos del día, críticas, pendientes, atendidas y tiempo promedio de respuesta) se calculan en vivo desde los datos.
+
+### Datos, conexión y modo sin conexión
+
+- Las cámaras, eventos y acciones viven en **Cloud Firestore** y se leen en tiempo real.
+- Una copia local en **Room** es la fuente de datos de las pantallas, así que sin conexión se ve lo último sincronizado.
+- Si una acción se hace sin conexión, la app avisa que se enviará al reconectar y Firestore la sube sola.
+- Todos los datos son **ficticios**. El Administrador puede cargarlos con un botón (Perfil → Cargar datos de prueba) y volver a cargarlos para restablecer el estado.
+
+### Notificaciones
+
+Las notificaciones son **locales y de prueba**: cuando llega una alerta crítica pendiente nueva, la app muestra una notificación. Se pueden apagar en Perfil, y el Administrador o Supervisor pueden generar una con "Simular alerta crítica". Android 13 o superior pide el permiso la primera vez.
 
 ### Crear una cuenta con correo
 
@@ -44,8 +85,8 @@ Todas las pantallas de acceso se adaptan al tamaño de pantalla: en celular se m
 ### Iniciar sesión con correo
 
 1. Firebase comprueba el correo y la contraseña.
-2. Si el correo **no está verificado**, la app reenvía el enlace de verificación y no deja entrar al Home.
-3. Si está verificado, la app lee el perfil en Firestore y abre el Home con el rol correspondiente.
+2. Si el correo **no está verificado**, la app reenvía el enlace de verificación y no deja entrar.
+3. Si está verificado, la app lee el perfil en Firestore y abre la pantalla principal con el rol correspondiente.
 
 ### Continuar con Google
 
@@ -53,13 +94,14 @@ La persona elige una cuenta de Google del dispositivo. Firebase valida la cuenta
 
 ### Cerrar sesión y datos guardados
 
-- Al cerrar sesión se limpian el formulario, la contraseña y el correo guardado.
-- "Recordar mi correo" guarda solo el correo en el dispositivo (nunca la contraseña) y solo se conserva si se cierra la app sin cerrar sesión.
+- Al cerrar sesión se detiene la sincronización y se limpian el formulario, la contraseña y el correo guardado.
+- "Recordar mi correo" guarda solo el correo en el dispositivo (nunca la contraseña).
 - La app **nunca almacena contraseñas**: las guarda Firebase Authentication.
+- Se guardan en el dispositivo, además, el modo oscuro y el interruptor de notificaciones.
 
 ### Manejo de errores
 
-Un error de datos no detiene ni reinicia la app. Cada operación muestra un estado de carga y traduce los errores a mensajes claros: credenciales incorrectas, correo ya registrado, nombre de usuario repetido, sin conexión, correo sin verificar o demasiados intentos.
+Un error de datos no detiene ni reinicia la app. Cada operación muestra un estado de carga y traduce los errores a mensajes claros: credenciales incorrectas, correo ya registrado, nombre de usuario repetido, sin conexión, correo sin verificar, falta de permisos o demasiados intentos. Los datos dañados en la nube se ignoran sin cerrar la app.
 
 ---
 
@@ -73,55 +115,4 @@ Para dejar entrar con Google, Firebase necesita reconocer la app. La reconoce po
 
 1. Se creó una clave de firma propia del proyecto: `app/modoguardian-debug.keystore`, y se subió al repositorio.
 2. En `app/build.gradle.kts` se configuró la firma de depuración (`signingConfigs`) para que use siempre esa clave, en lugar de la que genera cada computador.
-3. Se obtuvo la huella SHA-1 de esa clave y se registró en la consola de Firebase.
-4. Se descargó de nuevo el archivo `app/google-services.json`, que ya incluye los datos de Google para esa huella.
-
-Así, cualquier computador que abra el proyecto firma la app con la misma clave y la misma huella, y el botón de Google funciona sin configurar nada.
-
-### Advertencia: no es una práctica recomendada
-
-Esta solución es **solo para que el proyecto de la evaluación funcione en cualquier computador**. En una aplicación real no se debe hacer así:
-
-- La clave de firma y su contraseña **nunca se suben al repositorio**. Aquí la contraseña es pública (`android`) y cualquiera con acceso al repositorio puede firmar una app idéntica.
-- Una app real usa una clave de publicación privada, guardada fuera del código y protegida (por ejemplo, con Play App Signing), y registra en Firebase la huella de cada entorno (desarrollo, pruebas y producción).
-- Cada desarrollador usaría su propia clave de depuración y registraría su huella en Firebase, en lugar de compartir una clave.
-
----
-
-## Tecnologías
-
-- Kotlin y Jetpack Compose con Material Design 3
-- Arquitectura MVVM (StateFlow)
-- Navigation Compose
-- Window Size Classes (diseño adaptable)
-- Firebase Authentication (correo y Google) y Cloud Firestore
-- Credential Manager (selector de cuentas de Google)
-- SharedPreferences (persistencia local limitada)
-
-## Estructura del proyecto
-
-```
-com.example.modoguardian
-├── MainActivity.kt
-├── model        → estado de las pantallas, errores, resultados, usuario y rol
-├── navigation   → rutas, eventos de navegación y MainViewModel
-├── repository   → conexión con Firebase y preferencias locales
-├── viewmodel    → LoginViewModel y RegistroViewModel
-└── ui
-    ├── screens  → login, registro y home (tres diseños por tamaño)
-    ├── theme    → tema de la app
-    └── utils    → tamaño de pantalla y botón de Google
-```
-
-## Cómo ejecutarlo
-
-1. Abrir la carpeta del proyecto en Android Studio y esperar a que termine la sincronización de Gradle.
-2. Comprobar que existen `app/google-services.json` y `app/modoguardian-debug.keystore`.
-3. Usar un emulador con internet. Para probar "Continuar con Google", el emulador debe tener **Google Play** y una cuenta de Google agregada.
-4. Presionar **Run** e ingresar con alguno de los usuarios de prueba o crear una cuenta nueva.
-
-## Alcance de esta entrega
-
-- El ingreso con Apple no está incluido, porque requiere una cuenta de pago de Apple Developer.
-- La verificación del correo se hace con el enlace que envía Firebase, no con un código de 6 dígitos.
-- El rol de una cuenta solo se cambia desde la consola de Firebase.
+3. Se obtuvo la huella
