@@ -11,7 +11,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun dao(): GuardianDao
 
     companion object {
-        // Singleton: una sola base de datos para toda la app
         @Volatile
         private var instancia: AppDatabase? = null
 

@@ -30,7 +30,7 @@ fun AlertasScreen(guardianVm: GuardianViewModel, onAbrirAlerta: (String) -> Unit
     val ind by guardianVm.indicadores.collectAsState()
     var soloPendientes by rememberSaveable { mutableStateOf(true) }
 
-    // Alertas = todo lo que no es un simple evento informativo; las pendientes y más graves primero
+    // Alertas: todo lo que no es un simple evento informativo; las pendientes y mas graves primero
     val alertas = eventos
         .filter { it.prioridad != Prioridad.EVENTO }
         .filter { !soloPendientes || it.requiereAtencion }

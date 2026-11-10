@@ -16,7 +16,7 @@ fun mostrarToast(context: Context, texto: String) {
     Toast.makeText(context, texto, Toast.LENGTH_SHORT).show()
 }
 
-// Muestra como Toast los mensajes que emite el GuardianViewModel (ok, errores, "se enviará al reconectar")
+// Muestra como Toast los mensajes que emite el GuardianViewModel (ok, errores, "se enviara al reconectar")
 @Composable
 fun EscucharMensajes(viewModel: GuardianViewModel) {
     val context = LocalContext.current
@@ -28,7 +28,7 @@ fun EscucharMensajes(viewModel: GuardianViewModel) {
 fun tienePermisoCamara(context: Context): Boolean =
     ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
 
-// Devuelve una acción que pide el permiso de cámara si falta y luego ejecuta onConcedido
+// Devuelve una accion que pide el permiso de camara si falta y luego ejecuta onConcedido
 @Composable
 fun rememberSolicitarCamara(onConcedido: () -> Unit, onDenegado: () -> Unit = {}): () -> Unit {
     val context = LocalContext.current

@@ -93,7 +93,7 @@ fun AlertaDetalleScreen(
 
     LaunchedEffect(Unit) { while (true) { delay(1000); ahora = System.currentTimeMillis() } }
 
-    // Foto de evidencia: se crea el archivo en la galería y la cámara del sistema lo llena
+    // Foto de evidencia: se crea el archivo en la galería y la camara del sistema lo llena
     var uriFoto by remember { mutableStateOf<Uri?>(null) }
     val tomarFoto = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { guardada ->
         if (guardada && evento != null) {
@@ -149,7 +149,6 @@ fun AlertaDetalleScreen(
                 Text("Cargando evento…")
             } else {
                 val colorPrioridad = evento.prioridad.color()
-
                 // Resumen
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -189,7 +188,7 @@ fun AlertaDetalleScreen(
                     }
                 }
 
-                // Ver la cámara asociada
+                // Ver la camara asociada
                 if (evento.camaraId.isNotBlank()) {
                     OutlinedButton(onClick = { onVerCamara(evento.camaraId) }, modifier = Modifier.fillMaxWidth()) {
                         Icon(Icons.Filled.Videocam, contentDescription = null)
@@ -221,7 +220,7 @@ fun AlertaDetalleScreen(
                     }
                 }
 
-                // Acciones requeridas (según el rol)
+                // Acciones requeridas (segun el rol)
                 Text("ACCIONES", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
                 when {
                     !rol.puedeAtenderAlertas -> Text(
@@ -286,7 +285,7 @@ fun AlertaDetalleScreen(
                     }
                 }
 
-                // Cuenta regresiva de 2 minutos (solo mientras esté pendiente)
+                // Cuenta regresiva de 2 minutos (solo mientras este pendiente)
                 if (evento.requiereAtencion) {
                     val restante = ((evento.fechaMillis + 120_000L - ahora) / 1000L).toInt()
                     Card(
@@ -317,7 +316,7 @@ fun AlertaDetalleScreen(
                     }
                 }
 
-                // Trazabilidad: quién hizo qué y cuándo
+                // Trazabilidad: quién hizo que y cuando
                 SeccionTitulo("Historial de acciones")
                 if (acciones.isEmpty()) {
                     Text(

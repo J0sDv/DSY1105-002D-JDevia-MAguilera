@@ -68,7 +68,7 @@ fun HomeScreen(
     var indice by rememberSaveable { mutableIntStateOf(0) }
     val compacto = obtenerWindowSizeClass().widthSizeClass == WindowWidthSizeClass.Compact
 
-    // Muestra los mensajes (ok, errores, "se enviará al reconectar") como Toast
+    // Muestra los mensajes (ok, errores, "se enviara al reconectar") como Toast
     EscucharMensajes(guardianViewModel)
 
     // Android 13 o superior: hay que pedir el permiso para mostrar notificaciones

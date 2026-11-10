@@ -14,7 +14,7 @@ data class Camara(
     val zona: String,
     val estado: EstadoCamara,
     val hd: Boolean = true,
-    val esTelefono: Boolean = false   // true: usa la camara real del telefono (CameraX)
+    val esTelefono: Boolean = false // true: usa la camara real del telefono
 ) {
     val enLinea: Boolean get() = estado == EstadoCamara.EN_LINEA
 }

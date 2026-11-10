@@ -5,7 +5,7 @@ import com.example.modoguardian.model.EstadoCamara
 import com.example.modoguardian.model.EstadoEvento
 import com.example.modoguardian.model.Prioridad
 
-// Colores semánticos de estados y prioridades (el resto del color viene de MaterialTheme)
+// Colores semanticos de estados y prioridades (el resto del color viene de MaterialTheme)
 object ColoresGuardian {
     val Rojo = Color(0xFFEF4444)
     val Ambar = Color(0xFFF59E0B)

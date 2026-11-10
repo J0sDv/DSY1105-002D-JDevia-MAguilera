@@ -67,7 +67,7 @@ class GuardianViewModel(application: Application) : AndroidViewModel(application
         super.onCleared()
     }
 
-    // Datos de prueba y simulación
+    // Datos de prueba y simulacion
     fun cargarDatosPrueba() {
         viewModelScope.launch {
             _cargando.value = true
@@ -81,7 +81,7 @@ class GuardianViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    // Crea una alerta crítica ficticia (dispara la notificación local de prueba)
+    // Crea una alerta critica ficticia (dispara la notificacion local de prueba)
     fun simularAlerta() {
         viewModelScope.launch {
             val camara = camaras.value.filter { it.enLinea }.randomOrNull()
@@ -148,13 +148,13 @@ class GuardianViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    // Registra una acción sin cambiar el estado (por ejemplo, una llamada o una foto)
+    // Registra una accion sin cambiar el estado (por ejemplo, una llamada o una foto)
     fun registrarAccion(evento: Evento, textoAccion: String, sesion: LoginUiState) =
         atenderEvento(evento, null, textoAccion, sesion)
 
     fun acciones(eventoId: String): Flow<List<AccionRegistro>> = repo.acciones(eventoId)
 
-    // Administración de usuarios
+    // Administracion de usuarios
     fun cargarUsuarios() {
         viewModelScope.launch {
             try {

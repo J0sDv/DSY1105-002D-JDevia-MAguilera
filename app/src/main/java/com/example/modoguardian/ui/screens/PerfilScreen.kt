@@ -77,7 +77,7 @@ fun PerfilScreen(
     val oscuroActivo = modoOscuro ?: isSystemInDarkTheme()
     val simulado: () -> Unit = { mostrarToast(context, "Función simulada en este MVP") }
 
-    // Ancho máximo para que en tablet el perfil no se estire
+    // Ancho maximo para que en tablet el perfil no se estire
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         Column(
             modifier = Modifier
@@ -149,7 +149,7 @@ fun PerfilScreen(
             }
 
             SeccionAjustes("SEGURIDAD") {
-                // Real: Firebase envía un correo para elegir una contraseña nueva
+                // Real: Firebase envia un correo para elegir una contraseña nueva
                 FilaAjuste(
                     Icons.Filled.Key, "Cambiar contraseña", "Te enviamos un correo para cambiarla",
                     onClick = { guardianVm.enviarRestablecimiento(sesion.email) }
@@ -157,7 +157,7 @@ fun PerfilScreen(
                 FilaAjuste(Icons.Filled.PhoneAndroid, "Sesiones activas", "Dispositivo actual", trailing = {
                     Etiqueta("1 dispositivo", ColoresGuardian.Azul)
                 })
-                // Real: apaga o enciende las notificaciones de alertas críticas
+                // Real: apaga o enciende las notificaciones de alertas criticas
                 FilaAjuste(Icons.Filled.NotificationsActive, "Notificaciones", "Avisos de alertas críticas", trailing = {
                     Switch(checked = notificaciones, onCheckedChange = { guardianVm.setNotificaciones(it) })
                 })
@@ -175,7 +175,7 @@ fun PerfilScreen(
                 FilaAjuste(Icons.Filled.Description, "Términos y políticas de seguridad", onClick = simulado)
             }
 
-            // Herramientas según el rol: Administrador y Supervisor
+            // Herramientas segun el rol: Administrador y Supervisor
             if (rol == Rol.ADMIN || rol == Rol.SUPERVISOR) {
                 SeccionAjustes(if (rol == Rol.ADMIN) "ADMINISTRACIÓN" else "SUPERVISIÓN") {
                     if (rol == Rol.ADMIN) {

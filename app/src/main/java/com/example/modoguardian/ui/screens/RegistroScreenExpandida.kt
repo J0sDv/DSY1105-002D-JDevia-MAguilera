@@ -34,7 +34,6 @@ fun RegistroScreenExpandida(
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            // Panel izquierdo: logo y mensaje con colores del tema
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -64,8 +63,6 @@ fun RegistroScreenExpandida(
                     style = MaterialTheme.typography.titleMedium
                 )
             }
-
-            // Panel derecho: formulario centrado
             Column(
                 modifier = Modifier
                     .weight(1f)

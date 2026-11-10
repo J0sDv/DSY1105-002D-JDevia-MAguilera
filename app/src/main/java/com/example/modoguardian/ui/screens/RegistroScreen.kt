@@ -61,7 +61,7 @@ fun RegistroScreen(
         onVolver = onVolver
     )
 
-    // Compact = celular (Column) | Medium = Card centrada | Expanded = Row
+    // Elige el diseño según el ancho de la pantalla: celular, tablet pequeña o tablet grande
     when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Compact -> RegistroScreenCompacta(estado = estado, acciones = acciones)
         WindowWidthSizeClass.Medium -> RegistroScreenMediana(estado = estado, acciones = acciones)

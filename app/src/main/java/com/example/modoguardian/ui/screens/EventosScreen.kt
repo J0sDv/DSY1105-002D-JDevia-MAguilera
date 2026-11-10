@@ -69,7 +69,7 @@ fun EventosScreen(guardianVm: GuardianViewModel, onAbrirAlerta: (String) -> Unit
         porTipo && porTexto && (!soloCriticas || e.prioridad == Prioridad.CRITICA) && (!soloPendientes || e.requiereAtencion)
     }
 
-    // Agrupa por hora, de la más reciente a la más antigua
+    // Agrupa por hora, de la mas reciente a la más antigua
     val grupos = filtrados.groupBy { it.fechaMillis.inicioDeHora() }.entries.sortedByDescending { it.key }
 
     LazyColumn(

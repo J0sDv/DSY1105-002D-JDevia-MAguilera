@@ -24,7 +24,7 @@ fun RegistroScreenCompacta(
     acciones: RegistroAcciones = RegistroAcciones()
 ) {
     Scaffold(
-        // Barra superior (igual que el login)
+        // Barra superior
         topBar = {
             TopAppBar(title = { Text("Modo Guardián") })
         }
@@ -39,7 +39,6 @@ fun RegistroScreenCompacta(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Logo desde res/drawable
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo Modo Guardián",
@@ -48,8 +47,6 @@ fun RegistroScreenCompacta(
                     .height(150.dp),
                 contentScale = ContentScale.Fit
             )
-
-            // Título con color y tipografia del tema
             Text(
                 text = "Crea tu cuenta en Modo Guardián",
                 color = MaterialTheme.colorScheme.primary,

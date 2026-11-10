@@ -134,7 +134,7 @@ fun InicioScreen(
                 }
             }
 
-            // Seguimiento: solo Supervisor y Administrador (caso: indicadores y seguimiento de atención)
+            // Seguimiento: solo Supervisor y Administrador
             if (sesion.rol?.veSeguimiento == true) {
                 Card(modifier = Modifier.fillMaxWidth(), colors = colorTarjeta) {
                     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -158,7 +158,7 @@ fun InicioScreen(
                 }
             }
 
-            // Cámaras asignadas: las 4 primeras en filas de 2
+            // Camaras asignadas
             SeccionTitulo("Cámaras asignadas", "Ver todas", onVerCamaras)
             if (camaras.isEmpty()) {
                 Text(

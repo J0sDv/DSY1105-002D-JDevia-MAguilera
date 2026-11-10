@@ -60,7 +60,7 @@ fun Etiqueta(texto: String, color: Color, modifier: Modifier = Modifier) {
     }
 }
 
-// Número grande con su título debajo (indicadores)
+// Numero grande con su titulo debajo (indicadores)
 @Composable
 fun IndicadorNumero(valor: String, etiqueta: String, color: Color, modifier: Modifier = Modifier) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
@@ -78,7 +78,7 @@ fun IndicadorNumero(valor: String, etiqueta: String, color: Color, modifier: Mod
     }
 }
 
-// Título de sección con enlace opcional a la derecha ("Ver todas")
+// Título de seccion con enlace opcional a la derecha
 @Composable
 fun SeccionTitulo(titulo: String, accion: String? = null, onAccion: () -> Unit = {}) {
     Row(
@@ -91,7 +91,7 @@ fun SeccionTitulo(titulo: String, accion: String? = null, onAccion: () -> Unit =
     }
 }
 
-// Ícono según el tipo de evento
+// Icono segun el tipo de evento
 fun TipoEvento.icono(): ImageVector = when (this) {
     TipoEvento.INTRUSION -> Icons.Filled.Warning
     TipoEvento.ACCESO -> Icons.Filled.CheckCircle
@@ -102,7 +102,7 @@ fun TipoEvento.icono(): ImageVector = when (this) {
     TipoEvento.INCIDENCIA -> Icons.Filled.Info
 }
 
-// Tarjeta de cámara para las grillas
+// Tarjeta de camara para las grillas
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TarjetaCamara(camara: Camara, onClick: () -> Unit, modifier: Modifier = Modifier) {
@@ -192,7 +192,7 @@ fun FilaEvento(evento: Evento, onClick: () -> Unit, modifier: Modifier = Modifie
     }
 }
 
-// Fila de ajuste del Perfil: ícono, título, subtítulo y un elemento a la derecha (switch, etiqueta o flecha)
+// Fila de ajuste del Perfil: icono, titulo, subtitulo y un elemento a la derecha
 @Composable
 fun FilaAjuste(
     icono: ImageVector,
@@ -219,7 +219,7 @@ fun FilaAjuste(
     }
 }
 
-// Grupo de ajustes dentro de una tarjeta, con título en mayúsculas
+// Grupo de ajustes dentro de una tarjeta, con titulo en mayusculas
 @Composable
 fun SeccionAjustes(titulo: String, contenido: @Composable ColumnScope.() -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {

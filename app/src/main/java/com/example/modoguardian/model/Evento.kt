@@ -38,12 +38,12 @@ data class Evento(
     val tipo: TipoEvento,
     val prioridad: Prioridad,
     val estado: EstadoEvento,
-    val fechaMillis: Long,            // cuando ocurrio
-    val confianzaIA: Int = 0,         // 0 a 100
+    val fechaMillis: Long, // cuando ocurrio
+    val confianzaIA: Int = 0, // 0 a 100
     val duracionSeg: Int = 0,
-    val atendidoMillis: Long = 0L     // cuando se atendio (0 = aun no); sirve para el tiempo de respuesta
+    val atendidoMillis: Long = 0L
 ) {
-    // Una alerta pendiente (no un simple evento informativo) requiere acción
+    // Una alerta pendiente
     val requiereAtencion: Boolean
         get() = estado == EstadoEvento.PENDIENTE && prioridad != Prioridad.EVENTO
 }

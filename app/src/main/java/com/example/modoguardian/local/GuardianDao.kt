@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 abstract class GuardianDao {
 
-    // Flow: la pantalla se actualiza sola cuando cambia la tabla
     @Query("SELECT * FROM camaras ORDER BY nombre")
     abstract fun camaras(): Flow<List<CamaraEntity>>
 
@@ -29,7 +28,6 @@ abstract class GuardianDao {
     @Query("DELETE FROM eventos")
     abstract suspend fun borrarEventos()
 
-    // Reemplazo atómico: o se cambia todo o no se cambia nada
     @Transaction
     open suspend fun reemplazarCamaras(lista: List<CamaraEntity>) {
         borrarCamaras()

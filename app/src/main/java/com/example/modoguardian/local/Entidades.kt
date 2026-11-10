@@ -3,18 +3,18 @@ package com.example.modoguardian.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-// Tabla local de camaras (copia de Firestore)
+// Tabla local de camaras
 @Entity(tableName = "camaras")
 data class CamaraEntity(
     @PrimaryKey val id: String,
     val nombre: String,
     val zona: String,
-    val estado: String, // nombre del enum EstadoCamara
+    val estado: String,
     val hd: Boolean,
     val esTelefono: Boolean
 )
 
-// Tabla local de eventos (copia de Firestore)
+// Tabla local de eventos
 @Entity(tableName = "eventos")
 data class EventoEntity(
     @PrimaryKey val id: String,
@@ -23,9 +23,9 @@ data class EventoEntity(
     val camaraId: String,
     val camaraNombre: String,
     val zona: String,
-    val tipo: String, // nombre del enum TipoEvento
-    val prioridad: String, // nombre del enum Prioridad
-    val estado: String,// nombre del enum EstadoEvento
+    val tipo: String,
+    val prioridad: String,
+    val estado: String,
     val fechaMillis: Long,
     val confianzaIA: Int,
     val duracionSeg: Int,

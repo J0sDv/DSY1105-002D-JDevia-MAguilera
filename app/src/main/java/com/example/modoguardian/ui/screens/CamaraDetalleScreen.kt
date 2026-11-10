@@ -84,15 +84,15 @@ fun CamaraDetalleScreen(camaraId: String, guardianVm: GuardianViewModel, onVolve
     var linterna by remember { mutableStateOf(false) }
     var ahora by remember { mutableLongStateOf(System.currentTimeMillis()) }
 
-    // Reloj del visor y cronómetro de grabación
+    // Reloj del visor y cronometro de grabacion
     LaunchedEffect(Unit) { while (true) { ahora = System.currentTimeMillis(); delay(1000) } }
     LaunchedEffect(grabando) { segundos = 0; while (grabando) { delay(1000); segundos++ } }
-    // Al abrir CAM-01 se pide el permiso de cámara si falta
+    // Al abrir CAM-01 se pide el permiso de camara si falta
     LaunchedEffect(camara?.esTelefono) { if (camara?.esTelefono == true && !permiso) pedirPermiso() }
-    // Al salir de la pantalla se corta cualquier grabación en curso
+    // Al salir de la pantalla se corta cualquier grabacion en curso
     DisposableEffect(Unit) { onDispose { controlador.detenerGrabacion() } }
 
-    // Solo CAM-01 (la del teléfono) tiene foto, video y linterna reales
+    // Solo CAM-01 (la del telefono) tiene foto, video y linterna reales
     fun esReal(): Boolean = camara != null && camara.esTelefono && camara.enLinea && permiso
 
     fun hacerFoto() {
@@ -106,7 +106,7 @@ fun CamaraDetalleScreen(camaraId: String, guardianVm: GuardianViewModel, onVolve
             !c.enLinea -> mostrarToast(context, "La cámara no tiene señal")
             esReal() -> {
                 if (grabando) {
-                    controlador.detenerGrabacion()   // el aviso llega cuando el archivo queda guardado
+                    controlador.detenerGrabacion() // el aviso llega cuando el archivo queda guardado
                 } else {
                     val iniciado = controlador.iniciarGrabacion(context) { mensaje ->
                         grabando = false
@@ -117,7 +117,7 @@ fun CamaraDetalleScreen(camaraId: String, guardianVm: GuardianViewModel, onVolve
                 }
             }
             else -> {
-                grabando = !grabando   // grabación simulada (solo cronómetro)
+                grabando = !grabando  // grabacion simulada (solo cronometro)
                 if (grabando) mostrarToast(context, "Grabación simulada")
             }
         }
@@ -167,7 +167,7 @@ fun CamaraDetalleScreen(camaraId: String, guardianVm: GuardianViewModel, onVolve
             if (camara == null) {
                 Text("Cargando cámara…", modifier = Modifier.padding(16.dp))
             } else {
-                // Visor: cámara real, video de prueba o sin señal, con texto superpuesto
+                // Visor: camara real, video de prueba o sin señal, con texto superpuesto
                 Box(modifier = Modifier.fillMaxWidth().aspectRatio(4f / 3f).background(Color.Black)) {
                     when {
                         !camara.enLinea -> SinSenal(camara.estado.etiqueta)
@@ -258,7 +258,6 @@ fun CamaraDetalleScreen(camaraId: String, guardianVm: GuardianViewModel, onVolve
     }
 }
 
-// Botón redondo con su nombre debajo
 @Composable
 private fun BotonControl(
     etiqueta: String,

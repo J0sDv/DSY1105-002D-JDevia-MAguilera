@@ -19,7 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import java.security.SecureRandom
 
-// Conecta la app con Firebase: Authentication (cuentas) y Firestore (perfil y rol)
+// Conecta la app con Firebase
 class AuthRepository {
 
     private val auth = FirebaseAuth.getInstance()
@@ -38,12 +38,12 @@ class AuthRepository {
         var usuarioCreado: FirebaseUser? = null
 
         return try {
-            // 1) Crear la cuenta en Firebase Authentication
+            // Crea la cuenta en Firebase Authentication
             val resultado = auth.createUserWithEmailAndPassword(correo, password).await()
             val usuario = resultado.user ?: return ResultadoRegistro.Error("No se pudo crear la cuenta")
             usuarioCreado = usuario
 
-            // 2) Revisar que el nombre de usuario no este repetido
+            // Revisa que el nombre de usuario no este repetido
             val refUsername = db.collection("usernames").document(claveUsername)
             if (refUsername.get().await().exists()) {
                 usuario.delete().await()   // se elimina la cuenta recién creada
@@ -52,7 +52,7 @@ class AuthRepository {
                 return ResultadoRegistro.UsernameExistente
             }
 
-            // 3) Guardar perfil y username de forma atomica (o se guardan los dos o ninguno)
+            // Guardar perfil y username de forma atomica (o se guardan los dos o ninguno)
             val lote = db.batch()
             lote.set(
                 db.collection("users").document(usuario.uid),
@@ -67,7 +67,7 @@ class AuthRepository {
             lote.set(refUsername, mapOf("uid" to usuario.uid))
             lote.commit().await()
 
-            // 4) Enviar el correo con el enlace de verificacion (si falla, la cuenta igual queda creada)
+            // Envia el correo con el enlace de verificacion (si falla, la cuenta igual queda creada)
             val enviado = try {
                 usuario.sendEmailVerification().await()
                 true
@@ -75,7 +75,7 @@ class AuthRepository {
                 false
             }
 
-            // 5) Cerrar sesion: no se puede entrar hasta verificar el correo
+            // Cerrar sesion: no se puede entrar hasta verificar el correo
             auth.signOut()
             ResultadoRegistro.Exito(correoEnviado = enviado)
         } catch (e: FirebaseAuthUserCollisionException) {
@@ -99,11 +99,11 @@ class AuthRepository {
         val correo = email.trim()
 
         return try {
-            // 1) Validar correo y contraseña en Firebase Authentication
+            // Valida correo y contraseña en Firebase Authentication
             val resultado = auth.signInWithEmailAndPassword(correo, password).await()
             val usuario = resultado.user ?: return ResultadoLogin.Error("No se pudo iniciar sesión")
 
-            // 2) Actualizar los datos de la cuenta y comprobar si el correo ya fue verificado
+            // Actualiza los datos de la cuenta y comprobar si el correo ya fue verificado
             usuario.reload().await()
             if (!usuario.isEmailVerified) {
                 // Se reenvia el enlace y se cierra la sesion
@@ -117,7 +117,7 @@ class AuthRepository {
                 return ResultadoLogin.CorreoNoVerificado(correo, reenviado)
             }
 
-            // 3) Leer el perfil guardado en Firestore (username, rol y región)
+            // Lee el perfil guardado en Firestore
             val perfil = db.collection("users").document(usuario.uid).get().await()
             ResultadoLogin.Exito(armarUsuario(perfil, correo))
         } catch (e: FirebaseAuthInvalidUserException) {
@@ -165,7 +165,7 @@ class AuthRepository {
         auth.signOut()
     }
 
-    // Funciones auxiliares
+    // Funciones auxiliares ---------------------------------------
 
     // Arma el usuario a partir del perfil guardado en Firestore
     private fun armarUsuario(perfil: DocumentSnapshot, correo: String): Usuario {

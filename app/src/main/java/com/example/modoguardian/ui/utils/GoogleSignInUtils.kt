@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 // Posibles resultados al pedir la cuenta de Google
 sealed class ResultadoGoogle {
     data class Token(val idToken: String) : ResultadoGoogle() // Cuenta elegida
-    data object Cancelado : ResultadoGoogle() // La persona cerró el selector
+    data object Cancelado : ResultadoGoogle() // La persona cerro el selector
     data object SinCuentas : ResultadoGoogle() // No hay cuentas de Google en el dispositivo
     data class Error(val mensaje: String) : ResultadoGoogle() // Cualquier otro problema
 }
@@ -64,7 +64,7 @@ fun rememberGoogleSignIn(
         scope.launch {
             when (val resultado = obtenerTokenGoogle(context)) {
                 is ResultadoGoogle.Token -> onToken(resultado.idToken)
-                ResultadoGoogle.Cancelado -> { /* No pasa nada: la persona decidió no continuar */ }
+                ResultadoGoogle.Cancelado -> { /* No pasa nada: la persona decidio no continuar */ }
                 ResultadoGoogle.SinCuentas ->
                     onError("No hay una cuenta de Google en este dispositivo. Agrega una en Ajustes e inténtalo de nuevo.")
                 is ResultadoGoogle.Error -> onError(resultado.mensaje)

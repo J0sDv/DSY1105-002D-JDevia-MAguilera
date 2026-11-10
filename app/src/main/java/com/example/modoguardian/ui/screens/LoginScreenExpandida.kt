@@ -25,7 +25,7 @@ fun LoginScreenExpandida(
     onPasswordChange: (String) -> Unit = {},
     onRecordarCorreoChange: (Boolean) -> Unit = {},
     onLoginClick: () -> Unit = {},
-    onGoogleClick: () -> Unit = {},      // línea nueva
+    onGoogleClick: () -> Unit = {},
     onIrARegistro: () -> Unit = {}
 ) {
     Scaffold(

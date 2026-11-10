@@ -49,7 +49,7 @@ class GuardianRepository(context: Context) {
                 onError("No se pudieron leer las cámaras. Se muestran los últimos datos guardados")
                 return@addSnapshotListener
             }
-            // Un resultado vacío que viene solo de la caché no debe borrar la copia local
+            // Un resultado vacío que viene solo de la cache no debe borrar la copia local
             if (snap.isEmpty && snap.metadata.isFromCache) return@addSnapshotListener
             val lista = snap.documents.mapNotNull { it.aCamara() }.map { it.aEntidad() }
             scope.launch { try { dao.reemplazarCamaras(lista) } catch (e: Exception) { /* la app no se cae */ } }
@@ -62,7 +62,7 @@ class GuardianRepository(context: Context) {
             }
             if (snap.isEmpty && snap.metadata.isFromCache) return@addSnapshotListener
 
-            // Alertas criticas nuevas (después de la primera carga) -> notificación local
+            // Alertas criticas nuevas (despues de la primera carga)
             if (!primeraCarga) {
                 snap.documentChanges
                     .filter { it.type == DocumentChange.Type.ADDED }
@@ -84,7 +84,7 @@ class GuardianRepository(context: Context) {
         regEventos = null
     }
 
-    // Escrituras. Sin conexión, Firestore guarda el cambio y lo envía al reconectar:
+    // Escrituras. Sin conexion, Firestore guarda el cambio y lo envia al reconectar:
     // por eso se espera maximo 4 segundos y se informa si quedo pendiente
     suspend fun cargarDatosPrueba(): Boolean {
         val lote = db.batch()
@@ -98,7 +98,7 @@ class GuardianRepository(context: Context) {
     suspend fun crearEvento(evento: Evento): Boolean =
         confirmar(db.collection("eventos").document(evento.id).set(evento.aMapa()))
 
-    // Cambia el estado del evento (opcional) y registra la acción en la misma operación
+    // Cambia el estado del evento (opcional) y registra la accion en la misma operacion
     suspend fun atenderEvento(
         evento: Evento,
         nuevoEstado: EstadoEvento?,
@@ -138,7 +138,7 @@ class GuardianRepository(context: Context) {
         awaitClose { registro.remove() }
     }
 
-    // Administración de usuarios (las reglas solo lo permiten al ADMIN)
+    // Administracion de usuarios
     suspend fun listarUsuarios(): List<PerfilUsuario> =
         db.collection("users").get().await().documents.map { d ->
             PerfilUsuario(
@@ -175,7 +175,7 @@ class GuardianRepository(context: Context) {
         "atendidoMillis" to atendidoMillis
     )
 
-    // Los datos de la nube se leen con cuidado: un documento dañado se ignora (devuelve null)
+    // Los datos de la nube se leen con cuidado, un documento dañado se ignora (devuelve null)
     private fun DocumentSnapshot.aCamara(): Camara? {
         return try {
             Camara(

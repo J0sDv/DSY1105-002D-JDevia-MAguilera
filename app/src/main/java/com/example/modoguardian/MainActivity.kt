@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
                 val loginViewModel: LoginViewModel = viewModel() // sesión compartida Login y Home
                 val navController = rememberNavController()
 
-                // Escuchar eventos de navegación emitidos por el ViewModel
+                // Escuchar eventos de navegacion emitidos por el ViewModel
                 LaunchedEffect(key1 = Unit) {
                     navViewModel.navigationEvents.collectLatest { event ->
                         when (event) {
@@ -82,7 +82,7 @@ class MainActivity : ComponentActivity() {
                         startDestination = Screen.Login.route,
                         modifier = Modifier.padding(paddingValues = innerPadding)
                     ) {
-                        // Pantalla de login: al tener éxito pasa al Home; también puede ir al registro
+                        // Pantalla de login: al tener exito pasa al Home; tambien puede ir al registro
                         composable(route = Screen.Login.route) {
                             LoginScreen(
                                 viewModel = loginViewModel,

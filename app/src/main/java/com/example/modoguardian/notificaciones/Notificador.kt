@@ -13,14 +13,13 @@ import androidx.core.content.ContextCompat
 import com.example.modoguardian.MainActivity
 import com.example.modoguardian.model.Evento
 
-// Notificaciones de prueba: las crea la propia app (no usan servidor)
+// Notificaciones de prueba, las crea la propia app
 object Notificador {
 
     private const val CANAL_ID = "alertas_criticas"
 
     fun mostrarAlerta(context: Context, evento: Evento) {
         try {
-            // Desde Android 13 hay que tener el permiso de notificaciones
             if (Build.VERSION.SDK_INT >= 33 &&
                 ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED
@@ -50,7 +49,6 @@ object Notificador {
 
             manager.notify(evento.id.hashCode(), notificacion)
         } catch (e: Exception) {
-            // Una notificación fallida nunca debe detener la app
         }
     }
 }

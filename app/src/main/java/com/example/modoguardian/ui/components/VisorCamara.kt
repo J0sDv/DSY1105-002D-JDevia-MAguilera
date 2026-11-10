@@ -56,7 +56,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-// Controlador: guarda los casos de uso de CameraX y expone foto, grabación y linterna
+// Controlador: guarda los casos de uso de CameraX y expone foto, grabacion y linterna
 class ControladorCamara {
     var camera: Camera? = null
     var imageCapture: ImageCapture? = null
@@ -69,7 +69,7 @@ class ControladorCamara {
         camera?.cameraControl?.enableTorch(activa)
     }
 
-    // Guarda la foto en Galería > ModoGuardian (no pide permiso de almacenamiento en Android 13+)
+    // Guarda la foto en Galeria
     fun tomarFoto(context: Context, alTerminar: (String) -> Unit) {
         val captura = imageCapture ?: return alTerminar("La cámara aún no está lista")
         val valores = ContentValues().apply {
@@ -152,23 +152,20 @@ private fun vincular(
 
             proveedor.unbindAll()
             try {
-                // Intento 1: vista previa + foto + video
                 controlador.camera = proveedor.bindToLifecycle(duenio, selector, preview, imagen, video)
                 controlador.videoCapture = video
             } catch (e: Exception) {
-                // Algunos dispositivos no admiten los tres a la vez: se deja solo vista previa + foto
                 proveedor.unbindAll()
                 controlador.camera = proveedor.bindToLifecycle(duenio, selector, preview, imagen)
                 controlador.videoCapture = null
             }
             controlador.imageCapture = imagen
         } catch (e: Exception) {
-            // Sin cámara disponible: el visor queda negro y la app no se cae
         }
     }, ContextCompat.getMainExecutor(contexto))
 }
 
-// Vista previa de la cámara real del teléfono
+// Vista previa de la camara real del telefono
 @Composable
 fun VisorCamaraTelefono(controlador: ControladorCamara, modifier: Modifier = Modifier) {
     val contexto = LocalContext.current
@@ -184,7 +181,6 @@ fun VisorCamaraTelefono(controlador: ControladorCamara, modifier: Modifier = Mod
             try {
                 ProcessCameraProvider.getInstance(contexto).get().unbindAll()
             } catch (e: Exception) {
-                // nada que liberar
             }
             controlador.camera = null
             controlador.imageCapture = null
@@ -230,7 +226,7 @@ private fun VideoDemo(@RawRes recurso: Int, modifier: Modifier = Modifier) {
     )
 }
 
-// Señal de prueba: líneas de barrido que bajan en bucle (no necesita ningún archivo)
+// Señal de prueba: lineas de barrido que bajan en bucle (no necesita ningún archivo)
 @Composable
 fun SenalSimulada(modifier: Modifier = Modifier) {
     val transicion = rememberInfiniteTransition(label = "barrido")
@@ -250,7 +246,7 @@ fun SenalSimulada(modifier: Modifier = Modifier) {
     }
 }
 
-// Cámara desconectada o en mantención
+// Camara desconectada o en mantencion
 @Composable
 fun SinSenal(motivo: String, modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize().background(Color(0xFF111827)), contentAlignment = Alignment.Center) {

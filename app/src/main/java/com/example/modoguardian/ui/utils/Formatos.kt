@@ -9,7 +9,7 @@ import java.time.temporal.ChronoUnit
 fun Long.aHora(): String =
     DateTimeFormatter.ofPattern("HH:mm").format(Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()))
 
-// Fecha y hora, por ejemplo 27-10-2026 14:32:18
+// Fecha y hora, por ejemplo 05-11-2026 14:32:18
 fun Long.aFechaHora(): String =
     DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss").format(Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()))
 

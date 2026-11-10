@@ -41,7 +41,7 @@ fun LoginScreen(
         onError = viewModel::onGoogleError
     )
 
-    // Compact = celular (Column) | Medium = Card centrada | Expanded = Row
+    // Elige el diseño según el ancho de la pantalla: celular, tablet pequeña o tablet grande
     when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Compact -> LoginScreenCompacta(
             estado = estado,
@@ -120,7 +120,7 @@ fun LoginFormulario(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Campo contraseña (texto oculto con PasswordVisualTransformation)
+        // Campo contraseña
         OutlinedTextField(
             value = estado.password,
             onValueChange = onPasswordChange,
@@ -141,7 +141,7 @@ fun LoginFormulario(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Checkbox: recordar correo (persistencia local limitada)
+        // Checkbox: recordar correo
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(
                 checked = estado.recordarCorreo,
